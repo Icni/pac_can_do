@@ -4,34 +4,124 @@
             "Red",
             "Blue",
             "defaultCapture.lay",
-            0,
-            null,
-            55.0,
+            1,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            2,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            4,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            4,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            3,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            7,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            2,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            4,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            2,
+            "Red",
+            215.0,
+            0
+        ],
+        [
+            "Red",
+            "Blue",
+            "defaultCapture.lay",
+            5,
+            "Red",
+            215.0,
             0
         ]
     ],
     "layouts": [
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
+        "defaultCapture.lay",
         "defaultCapture.lay"
     ],
     "max_steps": 1200,
     "teams_stats": {
         "Blue": [
-            33.333333333333336,
-            1,
+            0.0,
             0,
-            1,
             0,
+            0,
+            10,
             0,
             0
         ],
         "Red": [
-            33.333333333333336,
-            1,
+            100.0,
+            30,
+            10,
             0,
-            1,
             0,
             0,
-            0
+            34
         ]
     }
 }
