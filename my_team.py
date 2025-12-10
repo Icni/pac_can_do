@@ -22,16 +22,16 @@ def create_team(first_index, second_index, is_red,
 # Agents #
 ##########
 
-class MinimaxNode:
-    def __init__(self, state, minimax_agent, agent_index=None, depth=0, alpha=None, beta=None):
+class PlanningNode:
+    def __init__(self, state, agent, agent_index=None, depth=0, alpha=None, beta=None):
         self.alpha = alpha if alpha is not None else float('-inf')
         self.beta = beta if beta is not None else float('inf')
 
         self.state = state
-        self.agent = minimax_agent
+        self.agent = agent
         self.action_state_pairs = {}
         # Standard: we start with index from each agent
-        self.agent_index = minimax_agent.index if agent_index is None else agent_index
+        self.agent_index = agent.index if agent_index is None else agent_index
         self.depth = depth
         self.cut = False
 
@@ -105,7 +105,7 @@ class MinimaxNode:
         if self.is_min():
             next_beta = min(self.beta, self.value)
 
-        return MinimaxNode(state, self.agent, agent_index, depth, next_alpha, next_beta)
+        return PlanningNode(state, self.agent, agent_index, depth, next_alpha, next_beta)
 
 
 class PlanningCaptureAgent(CaptureAgent):
@@ -145,7 +145,7 @@ class PlanningCaptureAgent(CaptureAgent):
             return successor
 
     def choose_action(self, game_state):
-        tree = MinimaxNode(game_state, self)
+        tree = PlanningNode(game_state, self)
 
         if tree.best_action is None:
             actions = game_state.get_legal_actions(self.index)
@@ -195,20 +195,24 @@ class OffensivePlanningAgent(PlanningCaptureAgent):
         enemies = [(game_state.get_agent_state(i), i)
                    for i in self.get_opponents(game_state)]
 
-        # Computes distance to nearest enemy (using rough distance if needed)
+        # Computes distance to nearest invader (using rough distance if needed)
         dists = []
+        scared_dists = []
         for a, i in enemies:
             if a.get_position() is not None:
                 d = self.get_maze_distance(my_pos, a.get_position())
             else:
                 d = game_state.get_agent_distances()[i]
-            d *= a.scared_timer
-            dists.append(d)
+
+            if a.scared_timer > 0:
+                scared_dists.append(d)
+            else:
+                dists.append(d)
+
         if len(dists) > 0:
             features['enemy_distance'] = min(dists)
-
-        # Sum of scared timers
-        features['num_scared'] = sum([a.scared_timer for (a, i) in enemies])
+        if len(scared_dists) > 0:
+            features['scared_distance'] = min(scared_dists)
 
         return features
 
@@ -217,8 +221,8 @@ class OffensivePlanningAgent(PlanningCaptureAgent):
             'successor_score': 100,
             'distance_to_food': -1,
             'score': 10,
-            'num_scared': 5,
             'enemy_distance': 100,
+            'scared_distance': -100,
         }
 
 
@@ -250,10 +254,10 @@ class DefensivePlanningAgent(PlanningCaptureAgent):
         dists = []
         for a, i in invaders:
             if a.get_position() is not None:
-                dists.append(self.get_maze_distance(my_pos, a.get_position()))
+                d = self.get_maze_distance(my_pos, a.get_position())
             else:
-                d = game_state.get_agent_distances()
-                dists.append(d[i])
+                d = game_state.get_agent_distances()[i]
+            dists.append(d)
         if len(dists) > 0:
             features['invader_distance'] = min(dists)
 
@@ -268,12 +272,15 @@ class DefensivePlanningAgent(PlanningCaptureAgent):
                                    for food in food_list)
                 features['distance_to_food'] = min_distance
 
+        features['patrol'] = random.random()
+
         return features
 
     def get_state_weights(self, game_state):
         return {
             'num_invaders': -1000,
-            'on_defense': 100,
+            'on_defense': 500,
             'invader_distance': -100,
             'distance_to_food': -1,
+            'patrol': 1,
         }
