@@ -214,6 +214,9 @@ class OffensivePlanningAgent(PlanningCaptureAgent):
         if len(scared_dists) > 0:
             features['scared_distance'] = min(scared_dists)
 
+        # Sum of scared timers
+        features['num_scared'] = sum([a.scared_timer for (a, i) in enemies])
+
         return features
 
     def get_state_weights(self, game_state):
@@ -221,6 +224,7 @@ class OffensivePlanningAgent(PlanningCaptureAgent):
             'successor_score': 100,
             'distance_to_food': -1,
             'score': 10,
+            'num_scared': 5,
             'enemy_distance': 100,
             'scared_distance': -100,
         }
